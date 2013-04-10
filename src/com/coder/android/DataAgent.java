@@ -48,6 +48,9 @@ import android.util.Log;
 import com.coder.android.AccessPath.Node;
 import com.coder.android.db.DatabaseManager;
 import com.coder.android.event.StatEvent;
+import com.coder.android.transfer.CrashData;
+import com.coder.android.transfer.SendData;
+import com.coder.android.util.JsonUtils;
 
 public class DataAgent {
 	public static final boolean DEBUG = false;
@@ -354,7 +357,7 @@ public class DataAgent {
 		Deflater deflater = null;
 		DataOutputStream output = null;
 		try {
-			byte[] input = data.getJson().toString().getBytes("utf-8");
+			byte[] input = JsonUtils.convertFrom(data.getJson());
 			deflater = new Deflater();
 			deflater.setInput(input);
 			deflater.finish();
@@ -998,13 +1001,16 @@ public class DataAgent {
 			}
 
 			SendData sendData = new SendData();
+			sendData.setName("data_root");
 			sendData.setJson(json);
 			sendData.setIdList(eventIds);
-			return sendData;
-			JSONObject crash = getCrashInfo();
+			SendData crash = getCrashInfo();
 			if (crash != null) {
-				json.put("crash", crash);
+				// FIXME
+				//json.put("crash", crash);
+				sendData.addData(crash);
 			}
+			return sendData;
 		} catch (JSONException e) {
 			Log.e("Mofang", "[generateSendData]JSONException");
 			if (isDebug())
@@ -1024,7 +1030,7 @@ public class DataAgent {
 	private static SendData getCrashInfo() throws UnsupportedEncodingException,
 			NoSuchAlgorithmException, JSONException {
 		SendData sd = new SendData();
-
+		sd.setName("crash");
 		List<StatEvent> crashEvents = StatEvent.getEvents(dbManager, "crash",
 				null, 0, false);
 		Map<String, CrashData> crashMap = new HashMap<String, CrashData>();
@@ -1138,57 +1144,6 @@ public class DataAgent {
 				.append(accessPath).toString());
 	}
 
-	private static class CrashData {
-		private String name;
-		private String stack;
-		private List<Long> timeList;
+	
 
-		public String getName() {
-			return this.name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		public String getStack() {
-			return this.stack;
-		}
-
-		public void setStack(String stack) {
-			this.stack = stack;
-		}
-
-		public List<Long> getTimeList() {
-			return this.timeList;
-		}
-
-		public synchronized void addTime(long time) {
-			if (this.timeList == null) {
-				this.timeList = new ArrayList();
-			}
-			this.timeList.add(Long.valueOf(Math.round(time / 1000.0D)));
-		}
-	}
-
-	private static class SendData {
-		private JSONObject json;
-		private List<Integer> idList;
-
-		public JSONObject getJson() {
-			return this.json;
-		}
-
-		public void setJson(JSONObject json) {
-			this.json = json;
-		}
-
-		public List<Integer> getIdList() {
-			return this.idList;
-		}
-
-		public void setIdList(List<Integer> idList) {
-			this.idList = idList;
-		}
-	}
 }
