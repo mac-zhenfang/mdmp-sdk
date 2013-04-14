@@ -38,6 +38,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface.OnClickListener;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
@@ -56,10 +57,11 @@ public class DataAgent {
 	public static final boolean DEBUG = false;
 	private static boolean developDebug = false;
 	static final String SDK_VERSION = "1.0.2";
-	public static final String LOG_TAG = "Mofang";
+	public static final String LOG_TAG = "MDMP_DataAgent";
+	public static final String APPKEY = "MDMP_APPKEY";
 	private static boolean init = false;
-	private static final String COLLECTOR = "http://c.imofan.com/";
-	private static final String REGISTER = "http://m.imofan.com/register/";
+	private static final String COLLECTOR = "http://c.mdmp.com/";
+	private static final String REGISTER = "http://m.mdmp.com/register/";
 	private static final int SEND_WAY_OPEN = 1;
 	private static final int SEND_WAY_DAY = 2;
 	private static final int SEND_WAY_REAL_TIME = 3;
@@ -101,7 +103,7 @@ public class DataAgent {
 			try {
 				Object appKeyObj = context.getPackageManager()
 						.getApplicationInfo(context.getPackageName(), 128).metaData
-						.get("MOFANG_APPKEY");
+						.get(APPKEY);
 
 				if ((appKeyObj instanceof Integer))
 					appKey = Integer.toString(((Integer) appKeyObj).intValue());
@@ -110,11 +112,11 @@ public class DataAgent {
 				else {
 					appKey = (String) appKeyObj;
 				}
-				Log.i("Mofang", new StringBuilder().append("imofan appkey: ")
+				Log.i("MDMP", new StringBuilder().append("mdmp appkey: ")
 						.append(appKey).toString());
 			} catch (Exception e) {
-				Log.e("Mofang",
-						"[getAppKey]Can't find metadata \"MOFANG_APPKEY\" in AndroidManifest.xml");
+				Log.e("MDMP",
+						"[getAppKey]Can't find metadata \"MDMP_APPKEY\" in AndroidManifest.xml");
 				e.printStackTrace();
 			}
 		}
@@ -1159,6 +1161,80 @@ public class DataAgent {
 				.append(str4).append(str5).append(str6).toString();
 		System.out.println(new StringBuilder().append("accessPath = ")
 				.append(accessPath).toString());
+	}
+
+	public static void onKillProcess(OnClickListener onClickListener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static String getConfigParams(Activity context,
+			String string) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static void onEvent(Activity context, String eventKey,
+			HashMap<String, String> map) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static void onEventDuration(Activity context,
+			String string, int i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static void onEventDuration(Activity context,
+			String string, String string2, int i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static void onEventDuration(Activity context, String string,
+			HashMap<String, String> map, int i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static void onEventBegin(Activity context, String string) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static void onEventBegin(Activity context, String string,
+			String string2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static void onEventEnd(Activity context, String string) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static void onEventEnd(Activity context, String string,
+			String string2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static void onKVEventBegin(Activity context,
+			String string, HashMap<String, String> map, String string2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static void onKVEventEnd(Activity context, String string,
+			String string2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static void flush(Activity context) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	
