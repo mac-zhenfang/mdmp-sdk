@@ -349,7 +349,7 @@ public class DataAgent {
 		default:
 			// EventDataSender dataSender = new EventDataSender(context, time);
 			// dataSender.start();
-			SendData data = generateSendData(context, time);
+			SendData data = generateDemoData(context, time);
 			sendEventsToServer(data, time);
 		}
 	}
@@ -782,8 +782,23 @@ public class DataAgent {
 		}
 		return sd;
 	}
-
-	private static SendData generateSendData(Context context, long time) {
+	
+	private static SendData generateDemoData(Context context, long time) {
+		SendData sendData = SendData.newInstance("data_root");
+		JSONObject root = sendData.getJson();
+		try {
+			root.put("resumeTime", time);
+			root.put("appKey", appKey);
+			root.put("userId", StatInfo.getString("dev_id", null));
+			root.put("osType", "Android");
+			root.put("value", "1");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return sendData;
+	}
+	
+	static SendData generateSendData(Context context, long time) {
 		SendData sendData = SendData.newInstance("data_root");
 		
 		int[] intTime = getDateAndHour(time);
