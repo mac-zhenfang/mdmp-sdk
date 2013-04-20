@@ -60,8 +60,8 @@ public class DataAgent {
 	public static final String LOG_TAG = "MDMP_DataAgent";
 	public static final String APPKEY = "MDMP_APPKEY";
 	private static boolean init = false;
-	private static final String COLLECTOR = "http://c.mdmp.com/";
-	private static final String REGISTER = "http://m.mdmp.com/register/";
+	private static final String COLLECTOR = "http://localhost:8090/mdmp/update";
+	private static final String REGISTER = "http://localhost:8090/mdmp/register/";
 	private static final int SEND_WAY_OPEN = 1;
 	private static final int SEND_WAY_DAY = 2;
 	private static final int SEND_WAY_REAL_TIME = 3;
@@ -360,7 +360,7 @@ public class DataAgent {
 		DataOutputStream output = null;
 		try {
 			byte[] input = JsonUtils.convertFrom(data.getJson());
-			deflater = new Deflater();
+			/*deflater = new Deflater();
 			deflater.setInput(input);
 			deflater.finish();
 			int size = 0;
@@ -377,11 +377,11 @@ public class DataAgent {
 				}
 				byteData = temp;
 				size += byteCount;
-			}
+			}*/
 
-			URL url = new URL(new StringBuilder().append(COLLECTOR)
-					.append(appKey).toString());
+			URL url = new URL(COLLECTOR);
 			connection = (HttpURLConnection) url.openConnection();
+			
 			connection.setDoOutput(true);
 			connection.setDoInput(true);
 			connection.setReadTimeout(20000);
@@ -393,9 +393,10 @@ public class DataAgent {
 					"application/octet-stream");
 			connection.connect();
 			output = new DataOutputStream(connection.getOutputStream());
-			output.write(byteData);
+			/*output.write(byteData);*/
+			output.write(input);
 			output.flush();
-			int httpCode = connection.getResponseCode();
+			/*int httpCode = connection.getResponseCode();
 
 			if (httpCode == 200) {
 				StringBuffer sb = new StringBuffer();
@@ -429,8 +430,8 @@ public class DataAgent {
 					StatEvent.clearAccessPath(dbManager);
 					StatEvent.clearHistoryEvents(dbManager,
 							getDateAndHour(time)[0]);
-				}
-			}
+				
+			}}*/
 		} catch (UnsupportedEncodingException e) {
 			Log.e("Mofang", "[sendEventsToServer]UnsupportedEncodingException");
 			e.printStackTrace();
@@ -789,12 +790,15 @@ public class DataAgent {
 		try {
 			root.put("resumeTime", time);
 			root.put("appKey", appKey);
-			root.put("userId", StatInfo.getString("dev_id", null));
+			root.put("devId", StatInfo.getString("dev_id", null));
 			root.put("osType", "Android");
 			root.put("value", "1");
+			root.put("action", "onResume");
+			root.put("category", currentActivityAlias);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		sendData.setJson(root);
 		return sendData;
 	}
 	
@@ -1130,7 +1134,7 @@ public class DataAgent {
 	}
 
 	public static void main(String[] args) {
-		String accessPath = "";
+		/*String accessPath = "";
 		System.out.println(new StringBuilder()
 				.append("[updateAccessDuration] id = 719155321, accessPath = ")
 				.append(accessPath).toString());
@@ -1175,7 +1179,8 @@ public class DataAgent {
 		accessPath = new StringBuilder().append(str1).append(str2).append(str3)
 				.append(str4).append(str5).append(str6).toString();
 		System.out.println(new StringBuilder().append("accessPath = ")
-				.append(accessPath).toString());
+				.append(accessPath).toString());*/
+		
 	}
 
 	public static void onKillProcess(OnClickListener onClickListener) {
@@ -1251,7 +1256,5 @@ public class DataAgent {
 		// TODO Auto-generated method stub
 		
 	}
-
-	
 
 }
